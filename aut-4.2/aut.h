@@ -1,8 +1,7 @@
 typedef struct par *par; /* 0 means "cover" */
 typedef struct item *item;
 
-struct par
-{
+struct par {
   char *id;
   par super, sub, prev;
   item first, last;
@@ -26,20 +25,17 @@ typedef struct app *app;
 typedef struct abst *abst;
 typedef struct var *var;
 
-struct exp
-{
+struct exp {
   short kind;
 };
 
-struct one
-{
+struct one {
   short kind; /* 1 */
   char *id;
   short code;
 };
 
-struct item
-{
+struct item {
   short kind; /* 2 or 3 */
   char *id;
   exp type;
@@ -50,8 +46,7 @@ struct item
   short echo;
 };
 
-struct def
-{
+struct def {
   short kind; /* 2 */
   char *id;
   exp type;
@@ -64,8 +59,7 @@ struct def
   int seq;
 };
 
-struct con
-{
+struct con {
   short kind; /* 3 */
   char *id;
   exp type;
@@ -78,27 +72,23 @@ struct con
   args implicit;
 };
 
-struct term
-{
+struct term {
   short kind; /* 4 */
   def fun;
   args arglist;
 };
 
-struct args
-{
+struct args {
   exp arg;
   args prev;
 };
 
-struct app
-{
+struct app {
   short kind; /* 5 */
   exp fun, arg;
 };
 
-struct abst
-{
+struct abst {
   short kind; /* 6 */
   char *id;
   exp type, body;
@@ -106,16 +96,14 @@ struct abst
   var clone;
 };
 
-struct var
-{
+struct var {
   short kind; /* 7 */
   abst lambda;
 };
 
 /* */
 
-typedef union
-{
+typedef union {
   int asint;
   char *asid;
   par aspar;
@@ -133,8 +121,8 @@ extern int yyerror();
 
 extern int line, cdepth;
 extern int flag[], parameter[];
-#define FLAG(x) flag[(unsigned) x]
-#define PARAMETER(x) parameter[(unsigned) x]
+#define FLAG(x) flag[(unsigned)x]
+#define PARAMETER(x) parameter[(unsigned)x]
 #define HASPROP() FLAG('p')
 
 extern char *ident();
@@ -163,8 +151,7 @@ extern args newlist();
 /* */
 
 typedef struct value *value;
-struct value
-{
+struct value {
   char *id, *oldvalue;
   value prev;
 };
@@ -173,17 +160,19 @@ struct value
 #define WRONG()
 #define CHECK(condition)
 #else
-#define WRONG() \
-  (error(), \
-  (void) fprintf(stderr, "\nfile \"%s\"; line %d # program error\n", __FILE__, __LINE__), \
-  exit(2))
+#define WRONG()                                                                \
+  (error(),                                                                    \
+   (void)fprintf(stderr, "\nfile \"%s\"; line %d # program error\n", __FILE__, \
+                 __LINE__),                                                    \
+   exit(2))
 #define CHECK(condition) ((condition) || (WRONG(), 1))
 #endif
 
 #define ALLOC(x) (x) alloc(sizeof(struct x))
 #define STDSUM (FLAG('z') ? stdout : stderr)
 
-extern char *yytext; /* with the original lex this should be: "extern char yytext[];"! */
+extern char *
+    yytext; /* with the original lex this should be: "extern char yytext[];"! */
 
 extern int mayrestore;
 extern void outofmem();

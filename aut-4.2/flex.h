@@ -5,14 +5,6 @@
 #define exit(status) (status, flexexit())
 #define isatty(fd) (fd, flexisatty())
 
-void
-flexexit()
-{
-  exit(2);
-}
+void flexexit() { exit(2); }
 
-int
-flexisatty()
-{
-  return 0;
-}
+int flexisatty() { return 0; }

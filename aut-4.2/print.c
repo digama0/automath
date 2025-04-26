@@ -1,34 +1,29 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "aut.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 extern int recfprintexp();
 
-int
-fprintsym(F, e)
-  FILE *F;
-  exp e;
+int fprintsym(F, e)
+FILE *F;
+exp e;
 {
   int n;
   char *id;
   par p;
 
   CHECK(e && (e->kind == CON || e->kind == DEF));
-  id = ((item) e)->id;
+  id = ((item)e)->id;
   n = 0;
-  if ((exp) getidvalue(id) == e)
+  if ((exp)getidvalue(id) == e)
     n += fprintf(F, "%s", id);
-  else
-  {
-    p = ((item) e)->where;
-    if (findexp(p, id) == e)
-    {
+  else {
+    p = ((item)e)->where;
+    if (findexp(p, id) == e) {
       n += fprintf(F, "%s\"", id);
       n += fprintrelpar(F, p, curpar);
       n += fprintf(F, "\"");
-    }
-    else
-    {
+    } else {
       n += fprintf(F, "{%s\"", id);
       n += fprintrelpar(F, p, curpar);
       n += fprintf(F, "\"}");
@@ -37,18 +32,15 @@ fprintsym(F, e)
   return n;
 }
 
-int
-fprintargs(F, a, b)
-  FILE *F;
-  args a, b;
+int fprintargs(F, a, b)
+FILE *F;
+args a, b;
 {
   int n;
 
   n = 0;
-  if (a)
-  {
-    if (a != b)
-    {
+  if (a) {
+    if (a != b) {
       n += fprintargs(F, a->prev, b);
       n += fprintf(F, ",");
     }
@@ -57,10 +49,9 @@ fprintargs(F, a, b)
   return n;
 }
 
-int
-recfprintexp(F, e)
-  FILE *F;
-  exp e;
+int recfprintexp(F, e)
+FILE *F;
+exp e;
 {
   int n;
   args a, b;
@@ -71,10 +62,9 @@ recfprintexp(F, e)
   if (!e)
     n += fprintf(F, "{???}");
   else
-    switch (e->kind)
-    {
+    switch (e->kind) {
     case ONE:
-      n += fprintf(F, "%s", ((one) e)->id);
+      n += fprintf(F, "%s", ((one)e)->id);
       break;
     case CON:
       n += fprintsym(F, e);
@@ -85,54 +75,54 @@ recfprintexp(F, e)
       n += fprintf(F, "}");
       break;
     case TERM:
-      n += fprintsym(F, ((term) e)->fun);
+      n += fprintsym(F, ((term)e)->fun);
       b = 0;
-      switch (PARAMETER('k'))
-      {
+      switch (PARAMETER('k')) {
       case 0:
-        for (a = ((term) e)->arglist, c = ((term) e)->fun->back; a && c; a = a->prev, c = c->back)
-	  if (a->arg != (exp) c)
-	    b = a;
-	break;
+        for (a = ((term)e)->arglist, c = ((term)e)->fun->back; a && c;
+             a = a->prev, c = c->back)
+          if (a->arg != (exp)c)
+            b = a;
+        break;
       case 1:
-        for (a = ((term) e)->arglist, c = ((term) e)->fun->back; a && c; a = a->prev, c = c->back)
-	  if (a != c->implicit)
-	    b = a;
+        for (a = ((term)e)->arglist, c = ((term)e)->fun->back; a && c;
+             a = a->prev, c = c->back)
+          if (a != c->implicit)
+            b = a;
         break;
       case 2:
       default:
-        for (a = ((term) e)->arglist; a; a = a->prev)
-	  b = a;
+        for (a = ((term)e)->arglist; a; a = a->prev)
+          b = a;
       }
-      if (b)
-      {
+      if (b) {
         n += fprintf(F, "(");
-        n += fprintargs(F, ((term) e)->arglist, b);
+        n += fprintargs(F, ((term)e)->arglist, b);
         n += fprintf(F, ")");
       }
       break;
     case APP:
       n += fprintf(F, "<");
-      n += recfprintexp(F, ((app) e)->arg);
+      n += recfprintexp(F, ((app)e)->arg);
       n += fprintf(F, ">");
-      n += recfprintexp(F, ((app) e)->fun);
+      n += recfprintexp(F, ((app)e)->fun);
       break;
     case ABST:
-      id = ((abst) e)->id;
+      id = ((abst)e)->id;
       if (FLAG('i'))
         n += fprintf(F, "{%08X}", e);
       n += fprintf(F, "[%s,", id);
-      n += recfprintexp(F, ((abst) e)->type);
+      n += recfprintexp(F, ((abst)e)->type);
       n += fprintf(F, "]");
       oldvalue = getidvalue(id);
-      setidvalue(id, (char *) 0);
-      n += recfprintexp(F, ((abst) e)->body);
+      setidvalue(id, (char *)0);
+      n += recfprintexp(F, ((abst)e)->body);
       setidvalue(id, oldvalue);
       break;
     case VAR:
       if (FLAG('i'))
-        n += fprintf(F, "{%08X}", ((var) e)->lambda);
-      n += fprintf(F, "%s", ((var) e)->lambda->id);
+        n += fprintf(F, "{%08X}", ((var)e)->lambda);
+      n += fprintf(F, "%s", ((var)e)->lambda->id);
       break;
     default:
       n += fprintf(F, "{{%d}}", e->kind);
@@ -140,84 +130,77 @@ recfprintexp(F, e)
   return n;
 }
 
-int
-occurs(e, l)
-  exp e;
-  abst l;
+int occurs(e, l)
+exp e;
+abst l;
 {
   args a;
 
   if (e)
-    switch (e->kind)
-    {
+    switch (e->kind) {
     case TERM:
-      for (a = ((term) e)->arglist; a; a = a->prev)
+      for (a = ((term)e)->arglist; a; a = a->prev)
         if (occurs(a->arg, l))
-	  return 1;
+          return 1;
       return 0;
       break;
     case APP:
-      return occurs(((app) e)->fun, l) || occurs(((app) e)->arg, l);
+      return occurs(((app)e)->fun, l) || occurs(((app)e)->arg, l);
       break;
     case ABST:
-      return occurs(((abst) e)->type, l) || occurs(((abst) e)->body, l);
+      return occurs(((abst)e)->type, l) || occurs(((abst)e)->body, l);
       break;
     case VAR:
-      return ((var) e)->lambda == l;
+      return ((var)e)->lambda == l;
       break;
     }
   return 0;
 }
 
-int
-abstclash(e, l)
-  exp e;
-  abst l;
+int abstclash(e, l)
+exp e;
+abst l;
 {
   args a;
 
   if (e)
-    switch (e->kind)
-    {
+    switch (e->kind) {
     case TERM:
-      for (a = ((term) e)->arglist; a; a = a->prev)
+      for (a = ((term)e)->arglist; a; a = a->prev)
         if (abstclash(a->arg, l))
-	  return 1;
+          return 1;
       return 0;
       break;
     case APP:
-      return abstclash(((app) e)->fun, l) || abstclash(((app) e)->arg, l);
+      return abstclash(((app)e)->fun, l) || abstclash(((app)e)->arg, l);
       break;
     case ABST:
-      if (((abst) e)->id == l->id)
-        return occurs(((abst) e)->body, l);
+      if (((abst)e)->id == l->id)
+        return occurs(((abst)e)->body, l);
       else
-        return abstclash(((abst) e)->type, l) || abstclash(((abst) e)->body, l);
+        return abstclash(((abst)e)->type, l) || abstclash(((abst)e)->body, l);
       break;
     }
   return 0;
 }
 
-void
-alpha(e)
-  exp e;
+void alpha(e) exp e;
 {
   args a;
   abst l;
 
   if (e)
-    switch (e->kind)
-    {
+    switch (e->kind) {
     case TERM:
-      for (a = ((term) e)->arglist; a; a = a->prev)
+      for (a = ((term)e)->arglist; a; a = a->prev)
         alpha(a->arg);
       break;
     case APP:
-      alpha(((app) e)->fun);
-      alpha(((app) e)->arg);
+      alpha(((app)e)->fun);
+      alpha(((app)e)->arg);
       break;
     case ABST:
-      l = (abst) e;
+      l = (abst)e;
       while (abstclash(l->body, l))
         l->id = other(l->id);
       alpha(l->type);
@@ -226,10 +209,9 @@ alpha(e)
     }
 }
 
-int
-fprintexp(F, e)
-  FILE *F;
-  exp e;
+int fprintexp(F, e)
+FILE *F;
+exp e;
 {
   alpha(e);
   return recfprintexp(F, e);

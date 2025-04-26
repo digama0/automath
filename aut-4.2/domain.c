@@ -1,25 +1,21 @@
+#include "aut.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "aut.h"
 
-exp
-domain(e)
-  exp e;
+exp domain(e)
+exp e;
 {
   exp f;
 
-  while (e)
-  {
+  while (e) {
     if (e->kind == ABST)
-      return ((abst) e)->type;
-    if (degree(e) > 1)
-    {
+      return ((abst)e)->type;
+    if (degree(e) > 1) {
       f = domain(auttype(e));
       if (f)
         return f;
     }
-    switch (e->kind)
-    {
+    switch (e->kind) {
     case ONE:
     case CON:
     case VAR:

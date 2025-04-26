@@ -1,21 +1,18 @@
+#include "aut.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "aut.h"
 
 args errorargs;
 
-void
-initexp()
-{
+void initexp() {
   errorargs = ALLOC(args);
   errorargs->prev = 0;
   errorargs->arg = 0;
 }
 
-term
-newterm(fun, arglist)
-  def fun;
-  args arglist;
+term newterm(fun, arglist)
+def fun;
+args arglist;
 {
   term e;
 
@@ -26,11 +23,10 @@ newterm(fun, arglist)
   return e;
 }
 
-exp
-call(fun, arglist, iscall)
-  exp fun;
-  args arglist;
-  int iscall;
+exp call(fun, arglist, iscall)
+exp fun;
+args arglist;
+int iscall;
 {
   def f;
   con d;
@@ -38,25 +34,23 @@ call(fun, arglist, iscall)
 
   if (!fun || arglist == errorargs)
     return 0;
-  if (fun->kind == DEF)
-  {
-    f = (def) fun;
+  if (fun->kind == DEF) {
+    f = (def)fun;
     b = 0;
     for (a = arglist, d = f->back; a && d; b = a, a = a->prev, d = d->back)
       ;
-    if (a)
-    {
+    if (a) {
       error();
-      (void) fprintf(stderr, "function has too many arguments: \"%s\"\n", f->id);
+      (void)fprintf(stderr, "function has too many arguments: \"%s\"\n", f->id);
       return 0;
     }
-    if (d)
-    {
-      if (!d->ref)
-      {
+    if (d) {
+      if (!d->ref) {
         error();
-        (void) fprintf(stderr, "implicit variable not in context: \"%s\", of function \"%s\"\n",
-	  d->id, f->id);
+        (void)fprintf(
+            stderr,
+            "implicit variable not in context: \"%s\", of function \"%s\"\n",
+            d->id, f->id);
         return 0;
       }
       if (b)
@@ -64,18 +58,16 @@ call(fun, arglist, iscall)
       else
         arglist = d->implicit;
     }
-    return (exp) newterm(f, arglist);
-  }
-  else
-  {
-    if (iscall)
-    {
+    return (exp)newterm(f, arglist);
+  } else {
+    if (iscall) {
       error();
       if (fun->kind == CON)
-        (void) fprintf(stderr, "a variable can't have arguments: \"%s\"\n", ((con) fun)->id);
-      else
-      if (fun->kind == VAR)
-        (void) fprintf(stderr, "a variable can't have arguments: \"%s\"\n", ((var) fun)->lambda->id);
+        (void)fprintf(stderr, "a variable can't have arguments: \"%s\"\n",
+                      ((con)fun)->id);
+      else if (fun->kind == VAR)
+        (void)fprintf(stderr, "a variable can't have arguments: \"%s\"\n",
+                      ((var)fun)->lambda->id);
       else
         WRONG();
     }
@@ -84,9 +76,8 @@ call(fun, arglist, iscall)
   }
 }
 
-exp
-appl(arg, fun)
-  exp arg, fun;
+exp appl(arg, fun)
+exp arg, fun;
 {
   app e;
 
@@ -96,13 +87,12 @@ appl(arg, fun)
   e->kind = APP;
   e->fun = fun;
   e->arg = arg;
-  return (exp) e;
+  return (exp)e;
 }
 
-var
-absframe(id, type)
-  char *id;
-  exp type;
+var absframe(id, type)
+char *id;
+exp type;
 {
   abst e;
   var d;
@@ -120,41 +110,38 @@ absframe(id, type)
   return d;
 }
 
-exp
-openabs(id, type)
-  char *id;
-  exp type;
+exp openabs(id, type)
+char *id;
+exp type;
 {
   var d;
 
   d = absframe(id, type);
-  savevalue(id, (char *) d);
-  return (exp) d;
+  savevalue(id, (char *)d);
+  return (exp)d;
 }
 
-exp
-closeabs(d, body)
-  exp d, body;
+exp closeabs(d, body)
+exp d, body;
 {
   abst e;
 
   CHECK(d && d->kind == VAR);
-  e = ((var) d)->lambda;
+  e = ((var)d)->lambda;
   CHECK(e && e->kind == ABST);
-  CHECK(getidvalue(e->id) == (char *) d);
+  CHECK(getidvalue(e->id) == (char *)d);
   restorevalue();
-  CHECK(getidvalue(e->id) != (char *) d);
+  CHECK(getidvalue(e->id) != (char *)d);
   if (!e->type || !body)
     return 0;
   CHECK(!e->body);
   e->body = body;
-  return (exp) e;
+  return (exp)e;
 }
 
-args
-newlist(prev, e)
-  args prev;
-  exp e;
+args newlist(prev, e)
+args prev;
+exp e;
 {
   args a;
 

@@ -1,36 +1,30 @@
+#include "aut.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "aut.h"
 
 #define SUB(p) (p ? p->sub : toplist)
 
 par curpar = 0, toplist = 0;
 
-int
-fprintpar(F, p)
-  FILE *F;
-  par p;
+int fprintpar(F, p)
+FILE *F;
+par p;
 {
   int n;
 
-  if (p)
-  {
-    if (p->super)
-    {
+  if (p) {
+    if (p->super) {
       n = fprintpar(F, p->super);
       return n + fprintf(F, "-%s", p->id);
-    }
-    else
+    } else
       return fprintf(F, "%s", p->id);
-  }
-  else
+  } else
     return fprintf(F, "{cover}");
 }
 
-int
-fprintrelpar(F, p, q)
-  FILE *F;
-  par p, q;
+int fprintrelpar(F, p, q)
+FILE *F;
+par p, q;
 {
   par r;
   int n;
@@ -48,33 +42,24 @@ fprintrelpar(F, p, q)
   return n + fprintf(F, "-%s", p->id);
 }
 
-void
-initpar()
-{
-  mark((char *) curcon);
-}
+void initpar() { mark((char *)curcon); }
 
-void
-exitpar()
-{
-  if (curpar)
-  {
+void exitpar() {
+  if (curpar) {
     error();
-    (void) fprintf(stderr, "book doesn't end at cover: \"");
-    (void) fprintpar(stderr, curpar);
-    (void) fprintf(stderr, "\"\n");
-    while (curpar)
-    {
+    (void)fprintf(stderr, "book doesn't end at cover: \"");
+    (void)fprintpar(stderr, curpar);
+    (void)fprintf(stderr, "\"\n");
+    while (curpar) {
       curpar = curpar->super;
-      setcon((exp) restoretomark());
+      setcon((exp)restoretomark());
     }
   }
-  setcon((exp) restoretomark());
+  setcon((exp)restoretomark());
 }
 
-par
-superpar(id)
-  char *id;
+par superpar(id)
+char *id;
 {
   par q;
 
@@ -82,16 +67,16 @@ superpar(id)
     if (q->id == id)
       return q;
   error();
-  (void) fprintf(stderr, "incorrect paragraph reference: \"%s\" in paragraph \"", id);
-  (void) fprintpar(stderr, curpar);
-  (void) fprintf(stderr, "\"\n");
+  (void)fprintf(stderr, "incorrect paragraph reference: \"%s\" in paragraph \"",
+                id);
+  (void)fprintpar(stderr, curpar);
+  (void)fprintf(stderr, "\"\n");
   return curpar;
 }
 
-par
-subpar(p, id)
-  par p;
-  char *id;
+par subpar(p, id)
+par p;
+char *id;
 {
   par q;
 
@@ -99,50 +84,50 @@ subpar(p, id)
     if (q->id == id)
       return q;
   error();
-  (void) fprintf(stderr, "incorrect paragraph reference: \"-%s\" in paragraph \"", id);
-  (void) fprintpar(stderr, p);
-  (void) fprintf(stderr, "\"\n");
+  (void)fprintf(stderr,
+                "incorrect paragraph reference: \"-%s\" in paragraph \"", id);
+  (void)fprintpar(stderr, p);
+  (void)fprintf(stderr, "\"\n");
   return p;
 }
 
-void
-openpar(id, re)
-  char *id;
-  int re;
+void openpar(id, re) char *id;
+int re;
 {
   par q;
   item d;
 
   for (q = SUB(curpar); q; q = q->prev)
-    if (q->id == id)
-    {
-      if (!re && FLAG('s'))
-      {
+    if (q->id == id) {
+      if (!re && FLAG('s')) {
         error();
-        (void) fprintf(stderr, "opening old paragraph (should have star): \"%s\" in paragraph \"", id);
-        (void) fprintpar(stderr, curpar);
-        (void) fprintf(stderr, "\"\n");
+        (void)fprintf(
+            stderr,
+            "opening old paragraph (should have star): \"%s\" in paragraph \"",
+            id);
+        (void)fprintpar(stderr, curpar);
+        (void)fprintf(stderr, "\"\n");
       }
       curpar = q;
-      mark((char *) curcon);
+      mark((char *)curcon);
       for (d = curpar->first; d; d = d->next)
-        savevalue(d->id, (char *) d);
+        savevalue(d->id, (char *)d);
       return;
     }
-  if (re)
-  {
+  if (re) {
     error();
-    (void) fprintf(stderr, "reopening non-existing paragraph: \"%s\" in paragraph \"", id);
-    (void) fprintpar(stderr, curpar);
-    (void) fprintf(stderr, "\"\n");
+    (void)fprintf(
+        stderr, "reopening non-existing paragraph: \"%s\" in paragraph \"", id);
+    (void)fprintpar(stderr, curpar);
+    (void)fprintf(stderr, "\"\n");
   }
   for (q = curpar; q; q = q->super)
-    if (q->id == id)
-    {
+    if (q->id == id) {
       error();
-      (void) fprintf(stderr, "duplicate nested identifiers: \"%s\" in paragraph \"", id);
-      (void) fprintpar(stderr, curpar);
-      (void) fprintf(stderr, "\"\n");
+      (void)fprintf(stderr,
+                    "duplicate nested identifiers: \"%s\" in paragraph \"", id);
+      (void)fprintpar(stderr, curpar);
+      (void)fprintf(stderr, "\"\n");
     }
   q = ALLOC(par);
   q->id = id;
@@ -155,47 +140,37 @@ openpar(id, re)
     toplist = q;
   q->first = q->last = 0;
   curpar = q;
-  mark((char *) curcon);  
+  mark((char *)curcon);
 }
 
-void
-closepar(id)
-  char *id;
+void closepar(id) char *id;
 {
   par q, r;
 
-  if (id)
-  {
-    if (curpar && curpar->id == id)
-    {
+  if (id) {
+    if (curpar && curpar->id == id) {
       curpar = curpar->super;
-      setcon((exp) restoretomark());
-    }
-    else
-    {
+      setcon((exp)restoretomark());
+    } else {
       error();
-      (void) fprintf(stderr, "closing paragraph that's not open: \"%s\" in paragraph \"", id);
-      (void) fprintpar(stderr, curpar);
-      (void) fprintf(stderr, "\"\n");
+      (void)fprintf(stderr,
+                    "closing paragraph that's not open: \"%s\" in paragraph \"",
+                    id);
+      (void)fprintpar(stderr, curpar);
+      (void)fprintf(stderr, "\"\n");
       for (q = curpar; q; q = q->super)
-        if (q->id == id)
-	{
-	  for (r = curpar; r != q; r = r->super)
-	    setcon((exp) restoretomark());
+        if (q->id == id) {
+          for (r = curpar; r != q; r = r->super)
+            setcon((exp)restoretomark());
           curpar = q;
-	  break;
-	}
+          break;
+        }
     }
-  }
-  else
-  if (curpar)
-  {
+  } else if (curpar) {
     curpar = curpar->super;
-    setcon((exp) restoretomark());
-  }
-  else
-  {
+    setcon((exp)restoretomark());
+  } else {
     error();
-    (void) fprintf(stderr, "closing paragraph with no paragraphs open\n");
+    (void)fprintf(stderr, "closing paragraph with no paragraphs open\n");
   }
 }
