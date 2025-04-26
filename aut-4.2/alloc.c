@@ -20,9 +20,7 @@ char *curdata, *curlimit, *saveddata;
 
 int mayrestore;
 
-int fprintmemused(F)
-FILE *F;
-{
+int fprintmemused(FILE *F) {
   struct block *b;
   int n, m;
 
@@ -70,9 +68,7 @@ void exitalloc() {
   }
 }
 
-char *alloc(n)
-int n;
-{
+char *alloc(int n) {
   int m;
   char *p;
   struct block *b, *a;

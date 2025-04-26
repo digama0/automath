@@ -25,9 +25,7 @@ void exititem() {
                   pncount + defcount, pncount + defcount + ebcount);
 }
 
-exp oneexp(code)
-int code;
-{
+exp oneexp(int code) {
   one e;
 
   e = code ? propone : typeone;
@@ -86,8 +84,7 @@ void recover() {
   }
 }
 
-void setcon(c) exp c;
-{
+void setcon(exp c) {
   if (c && c->kind != CON) {
     error();
     if (c->kind == DEF)
@@ -100,9 +97,7 @@ void setcon(c) exp c;
     curcon = (con)c;
 }
 
-void newcon(id, type) char *id;
-exp type;
-{
+void newcon(char *id, exp type) {
   con c;
   item e;
   args a;
@@ -174,10 +169,7 @@ exp type;
   ebcount++;
 }
 
-void newdef(id, body, type, noexpand) char *id;
-exp body, type;
-int noexpand;
-{
+void newdef(char *id, exp body, exp type, int noexpand) {
   def d;
   item e;
 

@@ -10,10 +10,7 @@ void initexp() {
   errorargs->arg = 0;
 }
 
-term newterm(fun, arglist)
-def fun;
-args arglist;
-{
+term newterm(def fun, args arglist) {
   term e;
 
   e = ALLOC(term);
@@ -23,11 +20,7 @@ args arglist;
   return e;
 }
 
-exp call(fun, arglist, iscall)
-exp fun;
-args arglist;
-int iscall;
-{
+exp call(exp fun, args arglist, int iscall) {
   def f;
   con d;
   args a, b;
@@ -76,9 +69,7 @@ int iscall;
   }
 }
 
-exp appl(arg, fun)
-exp arg, fun;
-{
+exp appl(exp arg, exp fun) {
   app e;
 
   if (!arg || !fun)
@@ -90,10 +81,7 @@ exp arg, fun;
   return (exp)e;
 }
 
-var absframe(id, type)
-char *id;
-exp type;
-{
+var absframe(char *id, exp type) {
   abst e;
   var d;
 
@@ -110,10 +98,7 @@ exp type;
   return d;
 }
 
-exp openabs(id, type)
-char *id;
-exp type;
-{
+exp openabs(char *id, exp type) {
   var d;
 
   d = absframe(id, type);
@@ -121,9 +106,7 @@ exp type;
   return (exp)d;
 }
 
-exp closeabs(d, body)
-exp d, body;
-{
+exp closeabs(exp d, exp body) {
   abst e;
 
   CHECK(d && d->kind == VAR);
@@ -139,10 +122,7 @@ exp d, body;
   return (exp)e;
 }
 
-args newlist(prev, e)
-args prev;
-exp e;
-{
+args newlist(args prev, exp e) {
   args a;
 
   if (prev == errorargs || !e)

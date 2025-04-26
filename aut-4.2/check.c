@@ -4,9 +4,7 @@
 
 int limitreductions, reductionsleft; /* Grundlagen needs 74 for t10"-8286" */
 
-int checktype(body, type)
-exp body, type;
-{
+int checktype(exp body, exp type) {
   exp t;
   int h, n, m;
 
@@ -86,10 +84,7 @@ exp fun, arg;
   return checktype(arg, dom);
 }
 
-int checkdegree(e, from, to)
-exp e;
-int from, to;
-{
+int checkdegree(exp e, int from, int to) {
   int n;
 
   CHECK(e);
@@ -108,9 +103,7 @@ int from, to;
   return 1;
 }
 
-int check(e)
-exp e;
-{
+int check(exp e) {
   int ok;
   args a;
 

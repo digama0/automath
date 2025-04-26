@@ -2,13 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern exp fillexp();
+exp fillexp(exp e);
 
-args substargs(d, l, a)
-exp d;
-abst l;
-args a;
-{
+args substargs(exp d, abst l, args a) {
   args b;
   exp c;
 
@@ -21,11 +17,7 @@ args a;
   return a;
 }
 
-exp substvar(d, l, e)
-exp d;
-abst l;
-exp e;
-{
+exp substvar(exp d, abst l, exp e) {
   exp f, g;
   args a;
   var c;
@@ -69,10 +61,7 @@ exp e;
   return e;
 }
 
-abst wireabst(e, type, body)
-abst e;
-exp type, body;
-{
+abst wireabst(abst e, exp type, exp body) {
   var d;
   abst l;
 
@@ -82,9 +71,7 @@ exp type, body;
   return l;
 }
 
-args fillargs(a)
-args a;
-{
+args fillargs(args a) {
   args b;
   exp c;
 
@@ -97,9 +84,7 @@ args a;
   return a;
 }
 
-exp fillexp(e)
-exp e;
-{
+exp fillexp(exp e) {
   exp f, g;
   args a;
 
@@ -130,11 +115,7 @@ exp e;
   return e;
 }
 
-exp substcon(a, c, e)
-args a;
-con c;
-exp e;
-{
+exp substcon(args a, con c, exp e) {
   args b;
   con d;
   exp f;
@@ -152,9 +133,7 @@ exp e;
   return f;
 }
 
-exp auttype(e)
-exp e;
-{
+exp auttype(exp e) {
   exp d;
 
   if (e)
@@ -184,9 +163,7 @@ exp e;
   return 0;
 }
 
-int degree(e)
-exp e;
-{
+int degree(exp e) {
   int n;
 
   n = 1;
@@ -219,9 +196,7 @@ exp e;
   return 0;
 }
 
-int flavor(e)
-exp e;
-{
+int flavor(exp e) {
   while (e)
     switch (e->kind) {
     case ONE:

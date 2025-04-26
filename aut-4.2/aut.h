@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 typedef struct par *par; /* 0 means "cover" */
 typedef struct item *item;
 
@@ -113,11 +115,11 @@ typedef union {
 
 extern YYSTYPE yylval;
 
-extern int yylex();
-extern int yyparse();
+int yylex(void);
+int yyparse(void);
 #undef yywrap
-extern int yywrap();
-extern int yyerror();
+int yywrap(void);
+int yyerror(char *message);
 
 extern int line, cdepth;
 extern int flag[], parameter[];
@@ -125,28 +127,28 @@ extern int flag[], parameter[];
 #define PARAMETER(x) parameter[(unsigned)x]
 #define HASPROP() FLAG('p')
 
-extern char *ident();
+char *ident(char *s);
 extern par curpar;
-extern par superpar();
-extern par subpar();
-extern void yield();
-extern void openpar();
-extern void closepar();
-extern void setcon();
-extern void newcon();
-extern void newdef();
-extern void opencon();
-extern void closecon();
-extern void finalclosecon();
-extern void recover();
-extern exp oneexp();
-extern exp call();
-extern exp appl();
-extern exp openabs();
-extern exp closeabs();
-extern exp findsym();
-extern exp findexp();
-extern args newlist();
+par superpar(char *id);
+par subpar(par p, char *id);
+void yield(void);
+void openpar(char *id, int re);
+void closepar(char *id);
+void setcon(exp c);
+void newcon(char *id, exp type);
+void newdef(char *id, exp body, exp type, int noexpand);
+void opencon(void);
+void closecon(void);
+void finalclosecon(void);
+void recover(void);
+exp oneexp(int code);
+exp call(exp fun, args arglist, int iscall);
+exp appl(exp arg, exp fun);
+exp openabs(char *id, exp type);
+exp closeabs(exp d, exp body);
+exp findsym(char *id);
+exp findexp(par p, char *id);
+args newlist(args prev, exp e);
 
 /* */
 
@@ -175,53 +177,53 @@ extern char *
     yytext; /* with the original lex this should be: "extern char yytext[];"! */
 
 extern int mayrestore;
-extern void outofmem();
-extern void savemem();
-extern void restoremem();
-extern void initalloc();
-extern void exitalloc();
-extern char *alloc();
-extern void initident();
-extern char *getidvalue();
-extern void setidvalue();
-extern char *other();
-extern void error();
+void outofmem(void);
+void savemem(void);
+void restoremem(void);
+void initalloc(void);
+void exitalloc(void);
+char *alloc(int n);
+void initident(void);
+char *getidvalue(char *s);
+void setidvalue(char *s, char *x);
+char *other(char *s);
+void error(void);
 extern par toplist;
-extern int fprintpar();
-extern int fprintrelpar();
-extern void initpar();
-extern void exitpar();
-extern void inititem();
-extern void exititem();
+int fprintpar(FILE *F, par p);
+int fprintrelpar(FILE *F, par p, par q);
+void initpar(void);
+void exitpar(void);
+void inititem(void);
+void exititem(void);
 extern int inbody;
 extern con curcon;
 extern item firstitem;
-extern void savevalue();
-extern void mark();
-extern void restorevalue();
-extern char *restoretomark();
-extern void initexp();
-extern term newterm();
-extern var absframe();
-extern int occurs();
-extern int fprintexp();
-extern int fprintsym();
-extern exp substvar();
-extern exp substcon();
-extern exp auttype();
-extern int degree();
-extern int flavor();
+void savevalue(char *id, char *newvalue);
+void mark(char *markvalue);
+void restorevalue(void);
+char *restoretomark(void);
+void initexp(void);
+term newterm(def fun, args arglist);
+var absframe(char *id, exp type);
+int occurs(exp e, abst l);
+int fprintexp(FILE *F, exp e);
+int fprintsym(FILE *F, exp e);
+exp substvar(exp d, abst l, exp e);
+exp substcon(args a, con c, exp e);
+exp auttype(exp e);
+int degree(exp e);
+int flavor(exp e);
 extern int mayeta;
 extern int limitreductions, reductionsleft;
-extern void initsame();
-extern void exitsame();
-extern int beta();
-extern int delta();
-extern int same();
-extern int checktype();
-extern int checkdegree();
-extern int check();
-extern exp domain();
-extern void excerpt();
-extern void everything();
-extern void deltalambda();
+void initsame(void);
+void exitsame(void);
+int beta(exp *xe);
+int delta(exp *xe);
+int same(exp d, exp e);
+int checktype(exp body, exp type);
+int checkdegree(exp e, int from, int to);
+int check(exp e);
+exp domain(exp e);
+void excerpt(void);
+void everything(void);
+void deltalambda(void);

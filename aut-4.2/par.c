@@ -6,10 +6,7 @@
 
 par curpar = 0, toplist = 0;
 
-int fprintpar(F, p)
-FILE *F;
-par p;
-{
+int fprintpar(FILE *F, par p) {
   int n;
 
   if (p) {
@@ -22,10 +19,7 @@ par p;
     return fprintf(F, "{cover}");
 }
 
-int fprintrelpar(F, p, q)
-FILE *F;
-par p, q;
-{
+int fprintrelpar(FILE *F, par p, par q) {
   par r;
   int n;
 
@@ -58,9 +52,7 @@ void exitpar() {
   setcon((exp)restoretomark());
 }
 
-par superpar(id)
-char *id;
-{
+par superpar(char *id) {
   par q;
 
   for (q = curpar; q; q = q->super)
@@ -74,10 +66,7 @@ char *id;
   return curpar;
 }
 
-par subpar(p, id)
-par p;
-char *id;
-{
+par subpar(par p, char *id) {
   par q;
 
   for (q = SUB(p); q; q = q->prev)
@@ -91,9 +80,7 @@ char *id;
   return p;
 }
 
-void openpar(id, re) char *id;
-int re;
-{
+void openpar(char *id, int re) {
   par q;
   item d;
 
@@ -143,8 +130,7 @@ int re;
   mark((char *)curcon);
 }
 
-void closepar(id) char *id;
-{
+void closepar(char *id) {
   par q, r;
 
   if (id) {

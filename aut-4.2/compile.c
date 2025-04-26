@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern void convert();
+void convert(exp e);
 
 #define dlputchar(c)                                                           \
   {                                                                            \
@@ -16,24 +16,21 @@ extern void convert();
 int printids, sepitems, colwidth, colsleft;
 long curseq;
 
-void dlputid(s) char *s;
-{
+void dlputid(char *s) {
   char c;
 
   for (; c = *s; s++)
     dlputchar(c);
 }
 
-void dlputint(i) long i;
-{
+void dlputint(long i) {
   if (i) {
     dlputint(i / 10);
     dlputchar('0' + (i % 10));
   }
 }
 
-void convertargs(a) args a;
-{
+void convertargs(args a) {
   if (a) {
     dlputchar('<');
     convert(a->arg);
@@ -42,8 +39,7 @@ void convertargs(a) args a;
   }
 }
 
-void convert(e) exp e;
-{
+void convert(exp e) {
   if (e)
     switch (e->kind) {
     case ONE:
@@ -87,8 +83,7 @@ void convert(e) exp e;
     WRONG();
 }
 
-void argabsts(c) con c;
-{
+void argabsts(con c) {
   if (c) {
     argabsts(c->back);
     dlputchar('[');
@@ -104,8 +99,7 @@ void argabsts(c) con c;
   }
 }
 
-void backabst(c) con c;
-{
+void backabst(con c) {
   if (c) {
     curseq--;
     c->ref = 0;

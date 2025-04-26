@@ -28,8 +28,7 @@ void initident() {
   otherbuf = alloc(otherlen);
 }
 
-char *ident(s)
-char *s;
+char *ident(char *s)
 {
   int h, n;
   char c, *p, *q, *r, *t;
@@ -60,16 +59,11 @@ char *s;
   return t;
 }
 
-void setidvalue(s, x) char *s, *x;
-{ *((char **)(s - sizeof(char *))) = x; }
+void setidvalue(char *s, char *x) { *((char **)(s - sizeof(char *))) = x; }
 
-char *getidvalue(s)
-char *s;
-{ return *((char **)(s - sizeof(char *))); }
+char *getidvalue(char *s) { return *((char **)(s - sizeof(char *))); }
 
-char *other(s)
-char *s;
-{
+char *other(char *s) {
   char *p, *q;
   int n;
 

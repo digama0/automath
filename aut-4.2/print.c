@@ -4,10 +4,7 @@
 
 extern int recfprintexp();
 
-int fprintsym(F, e)
-FILE *F;
-exp e;
-{
+int fprintsym(FILE *F, exp e) {
   int n;
   char *id;
   par p;
@@ -32,10 +29,7 @@ exp e;
   return n;
 }
 
-int fprintargs(F, a, b)
-FILE *F;
-args a, b;
-{
+int fprintargs(FILE *F, args a, args b) {
   int n;
 
   n = 0;
@@ -49,10 +43,7 @@ args a, b;
   return n;
 }
 
-int recfprintexp(F, e)
-FILE *F;
-exp e;
-{
+int recfprintexp(FILE *F, exp e) {
   int n;
   args a, b;
   con c;
@@ -130,10 +121,7 @@ exp e;
   return n;
 }
 
-int occurs(e, l)
-exp e;
-abst l;
-{
+int occurs(exp e, abst l) {
   args a;
 
   if (e)
@@ -157,10 +145,7 @@ abst l;
   return 0;
 }
 
-int abstclash(e, l)
-exp e;
-abst l;
-{
+int abstclash(exp e, abst l) {
   args a;
 
   if (e)
@@ -184,8 +169,7 @@ abst l;
   return 0;
 }
 
-void alpha(e) exp e;
-{
+void alpha(exp e) {
   args a;
   abst l;
 
@@ -209,10 +193,7 @@ void alpha(e) exp e;
     }
 }
 
-int fprintexp(F, e)
-FILE *F;
-exp e;
-{
+int fprintexp(FILE *F, exp e) {
   alpha(e);
   return recfprintexp(F, e);
 }

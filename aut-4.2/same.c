@@ -11,7 +11,7 @@
   } else                                                                       \
     return r
 
-extern int delta();
+int delta(exp *xe);
 
 int mayeta = 0, betacount = 0, deltacount = 0, etacount = 0, trace, traceline,
     depth;
@@ -29,8 +29,7 @@ void exitsame() {
         betacount, deltacount, etacount);
 }
 
-int sameargs(a, b)
-args a, b;
+int sameargs(args a, args b)
 {
   args c, d;
 
@@ -56,9 +55,7 @@ void outofreductions() {
   }
 }
 
-int beta(xe)
-exp *xe;
-{
+int beta(exp *xe) {
   exp e, f;
 
   e = *xe;
@@ -94,9 +91,7 @@ exp *xe;
   return 1;
 }
 
-int delta(xe)
-exp *xe;
-{
+int delta(exp *xe) {
   exp e, b;
   def f;
 
@@ -117,9 +112,7 @@ exp *xe;
   return 0;
 }
 
-int eta(xe)
-exp *xe;
-{
+int eta(exp *xe) {
   abst e;
   exp f, g;
 
@@ -163,9 +156,7 @@ exp *xe;
   return 1;
 }
 
-void opentrace(d, e, lastred) exp d, e;
-char *lastred;
-{
+void opentrace(exp d, exp e, char *lastred) {
   (void)fprintf(stdout, "%*s", (depth - 1) % MAXTRACEINDENT, "");
   (void)fprintexp(stdout, d);
   (void)fprintf(stdout, " ?= ");
@@ -176,16 +167,13 @@ char *lastred;
   (void)fflush(stdout);
 }
 
-void closetrace(r) int r;
-{
+void closetrace(int r) {
   depth--;
   (void)fprintf(stdout, "%*s%s\n", depth % MAXTRACEINDENT, "", r ? "+" : "-");
   (void)fflush(stdout);
 }
 
-int same(d, e)
-exp d, e;
-{
+int same(exp d, exp e) {
   abst l;
   int h;
   char *lastred;

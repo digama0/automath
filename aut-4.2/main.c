@@ -39,8 +39,7 @@ void error() {
   errorcount++;
 }
 
-void sighandler(sig) int sig;
-{
+void sighandler(int sig) {
   error();
   (void)fprintf(stderr, "aborted in paragraph \"");
   (void)fprintpar(stderr, curpar);
@@ -48,9 +47,7 @@ void sighandler(sig) int sig;
   longjmp(env, 1);
 }
 
-int yyerror(message)
-char *message;
-{
+int yyerror(char *message) {
   error();
   (void)fprintf(stderr, "%s: unexpected \"%s\"\n", message, yytext);
   return 0;
@@ -85,10 +82,7 @@ void usage() {
   exit(2);
 }
 
-int main(argc, argv)
-int argc;
-char **argv;
-{
+int main(int argc, char **argv) {
   int i, b, c, n;
   char *s, *t;
   time_t start;

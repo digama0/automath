@@ -4,8 +4,7 @@
 
 value savedvalues = 0, unusedvalues = 0;
 
-void savevalue(id, newvalue) char *id, *newvalue;
-{
+void savevalue(char *id, char *newvalue) {
   value v;
 
   if (unusedvalues) {
@@ -23,8 +22,7 @@ void savevalue(id, newvalue) char *id, *newvalue;
   savedvalues = v;
 }
 
-void mark(markvalue) char *markvalue;
-{ savevalue(0, markvalue); }
+void mark(char *markvalue) { savevalue(0, markvalue); }
 
 void popvalue() {
   value v;
@@ -53,9 +51,7 @@ char *restoretomark() {
   return markvalue;
 }
 
-exp checkcontext(e)
-exp e;
-{
+exp checkcontext(exp e) {
   if (e->kind == CON && inbody && !((con)e)->ref) {
     error();
     (void)fprintf(stderr, "variable not in context: \"%s\"\n", ((con)e)->id);
@@ -64,9 +60,7 @@ exp e;
   return e;
 }
 
-exp findsym(id)
-char *id;
-{
+exp findsym(char *id) {
   exp e;
 
   e = (exp)getidvalue(id);
@@ -78,10 +72,7 @@ char *id;
   return e;
 }
 
-exp findexp(p, id)
-par p;
-char *id;
-{
+exp findexp(par p, char *id) {
   item e;
 
   if (p) {

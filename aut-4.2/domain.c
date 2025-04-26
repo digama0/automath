@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-exp domain(e)
-exp e;
-{
+exp domain(exp e) {
   exp f;
 
   while (e) {
