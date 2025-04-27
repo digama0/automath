@@ -1,7 +1,9 @@
 /* stupid flex */
 
 #include <stdlib.h>
+#include <unistd.h>
 
+#define YY_NO_UNISTD_H
 #define exit(status) (status, flexexit())
 #define isatty(fd) (fd, flexisatty())
 
