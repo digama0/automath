@@ -1,0 +1,10 @@
+name = "automath-lean"
+version = "0.1.0"
+defaultTargets = ["automath-lean"]
+
+[[lean_lib]]
+name = "Automath"
+
+[[lean_exe]]
+name = "automath"
+root = "Main"
