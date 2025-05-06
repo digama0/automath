@@ -17,15 +17,15 @@ struct par {
 #define ABST 6
 #define VAR 7
 
-typedef struct exp *exp;
-typedef struct one *one;
-typedef struct def *def;
-typedef struct con *con;
-typedef struct term *term;
-typedef struct args *args;
-typedef struct app *app;
-typedef struct abst *abst;
-typedef struct var *var;
+typedef struct exp *exp;   // expression
+typedef struct one *one;   // PROP or TYPE
+typedef struct def *def;   // definition
+typedef struct con *con;   // context or free variable
+typedef struct term *term; // term constructor
+typedef struct args *args; // term argument list
+typedef struct app *app;   // application
+typedef struct abst *abst; // abstraction (lambda)
+typedef struct var *var;   // bound variable
 
 struct exp {
   short kind;

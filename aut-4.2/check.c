@@ -53,10 +53,7 @@ int checktype(exp body, exp type) {
   return 1;
 }
 
-int checkargs(c, a)
-con c;
-args a;
-{
+int checkargs(con c, args a) {
   if (a) {
     CHECK(c);
     return checkargs(c->back, a->prev) &&
@@ -67,9 +64,7 @@ args a;
   }
 }
 
-int checkdomain(fun, arg)
-exp fun, arg;
-{
+int checkdomain(exp fun, exp arg) {
   exp dom;
 
   CHECK(fun && arg);

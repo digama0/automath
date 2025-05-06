@@ -4,16 +4,14 @@
 
 int newones = 1, contexting, curconvalid;
 
-void markitem(d) item d;
-{
+void markitem(item d) {
   if (!d->echo) {
     d->echo = 1;
     newones = 1;
   }
 }
 
-void scanexp(e) exp e;
-{
+void scanexp(exp e) {
   args a;
 
   if (e)
@@ -34,8 +32,7 @@ void scanexp(e) exp e;
     }
 }
 
-void cleanpars(p) par p;
-{
+void cleanpars(par p) {
   for (; p; p = p->prev) {
     p->first = 0;
     p->last = 0;
@@ -43,9 +40,7 @@ void cleanpars(p) par p;
   }
 }
 
-int contains(p, q)
-par p, q;
-{
+int contains(par p, par q) {
   while (1) {
     if (p == q)
       return 1;
@@ -55,10 +50,7 @@ par p, q;
   }
 }
 
-int fchangepar(F, p, q)
-FILE *F;
-par p, q;
-{
+int fchangepar(FILE *F, par p, par q) {
   int n;
 
   n = 0;
@@ -70,10 +62,7 @@ par p, q;
   return n;
 }
 
-int fprintitem(F, d)
-FILE *F;
-item d;
-{
+int fprintitem(FILE *F, item d) {
   par p;
   int n;
 
@@ -127,9 +116,7 @@ item d;
   return n;
 }
 
-int printecho(F)
-FILE *F;
-{
+int printecho(FILE *F) {
   item d, e;
   int n;
 

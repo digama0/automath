@@ -29,8 +29,7 @@ void exitsame() {
         betacount, deltacount, etacount);
 }
 
-int sameargs(args a, args b)
-{
+int sameargs(args a, args b) {
   args c, d;
 
   if (a == b)

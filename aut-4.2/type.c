@@ -17,6 +17,7 @@ args substargs(exp d, abst l, args a) {
   return a;
 }
 
+// Substitutes `d` for the variable whose lambda is `l` in `e`
 exp substvar(exp d, abst l, exp e) {
   exp f, g;
   args a;

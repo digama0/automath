@@ -28,8 +28,7 @@ void initident() {
   otherbuf = alloc(otherlen);
 }
 
-char *ident(char *s)
-{
+char *ident(char *s) {
   int h, n;
   char c, *p, *q, *r, *t;
 
