@@ -1,6 +1,6 @@
 name = "automath-lean"
 version = "0.1.0"
-defaultTargets = ["automath-lean"]
+defaultTargets = ["automath"]
 
 [[lean_lib]]
 name = "Automath"

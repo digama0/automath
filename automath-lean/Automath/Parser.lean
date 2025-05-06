@@ -1,7 +1,9 @@
 import Std.Internal.Parsec
 
 open Std.Internal.Parsec String
-def hello := "world"
+
+namespace Automath
+namespace AST
 
 inductive Namespace where
   | current
@@ -33,6 +35,11 @@ inductive Item where
   | axiom_ (id : String) (ty : Expr)
   | def_ (id : String) (ty : Expr) (v : Expr)
   deriving Repr
+
+end AST
+
+namespace Parser
+open AST
 
 def charsWhile (p : Char → Bool) : Parser String :=
   many1Chars <| attempt do
