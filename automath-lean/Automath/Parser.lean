@@ -11,10 +11,25 @@ inductive Namespace where
   | sub (parent : Namespace) (s : String)
   deriving Repr
 
+def Namespace.toString : Namespace → String
+  | .current => ""
+  | .super s => s
+  | .sub p x => p.toString ++ "." ++ x
+
+instance : ToString Namespace where toString n := n.toString
+instance : Repr Namespace where reprPrec n _ := n.toString
+
 inductive Symbol where
   | simple (s : String)
   | ns (s : String) (ns : Namespace)
   deriving Repr
+
+instance : ToString Symbol where
+  toString
+  | .simple s => s
+  | .ns s p => s!"{s}.{p}"
+
+instance : Repr Symbol where reprPrec n _ := toString n
 
 inductive Expr where
   | type
@@ -23,7 +38,25 @@ inductive Expr where
   | papp (fn arg : Expr)
   | app (fn arg : Expr)
   | lam (x : String) (ty : Expr) (body : Expr)
-  deriving Repr
+
+mutual
+partial def Expr.reprPrec : Expr → Nat → Std.Format
+  | .type, _ => "TYPE"
+  | .prop, _ => "PROP"
+  | .id s, _ => repr s
+  | .lam x ty body, _ => f!"λ{x}:{ty.reprPrec 0} ↦ {body.reprPrec 0}"
+  | .papp fn arg, _ => Expr.reprApp fn [arg]
+  | .app e1 e2, n =>
+    let f := f!"{e1.reprPrec 0} {e2.reprPrec 1}"
+    if n > 0 then f!"({f})" else f
+
+partial def Expr.reprApp : Expr → List Expr → Std.Format
+  | .papp fn arg, es => fn.reprApp (arg :: es)
+  | e, [] => Expr.reprPrec e 0
+  | e, es => Expr.reprPrec e 0 ++ f!"[{f!", ".joinSep (es.map (·.reprPrec 0))}]"
+end
+
+instance : Repr Expr where reprPrec := Expr.reprPrec
 
 inductive Item where
   | comment
@@ -32,8 +65,7 @@ inductive Item where
   | closeSection (s : String)
   | setContext (p : Option Symbol)
   | parameter (name : String) (ty : Expr)
-  | axiom_ (id : String) (ty : Expr)
-  | def_ (id : String) (ty : Expr) (v : Expr)
+  | def_ (id : String) (ty : Expr) (v : Option Expr)
   deriving Repr
 
 end AST
@@ -89,8 +121,6 @@ def item : Parser Item :=
     _ ← pstring ":="
     let val ← pstring "'prim'" *> pure none <|> (some <$> expr)
     let ty ← pchar ':' *> expr
-    match val with
-    | none => pure (.axiom_ id ty)
-    | some v => pure (.def_ id ty v))
+    pure (.def_ id ty val))
 
 def items : Parser (Array Item) := many (item <* ws)
